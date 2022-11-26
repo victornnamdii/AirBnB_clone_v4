@@ -147,6 +147,13 @@ def places_search():
             d = place.to_dict()
             d.pop('amenities', None)
             d['owner'] = owner
+            all_reviews = []
+            for review in place.reviews:
+                review_dict = {}
+                review_dict['name'] = storage.get(User, review.user_id).first_name + ' ' + storage.get(User, review.user_id).last_name
+                review_dict['message'] = review.text
+                all_reviews.append(review_dict)
+            d['reviews'] = all_reviews
             list_places.append(d)
         return jsonify(list_places)
 
@@ -183,6 +190,13 @@ def places_search():
         d = place.to_dict()
         d.pop('amenities', None)
         d['owner'] = owner
+        all_reviews = []
+        for review in place.reviews:
+            review_dict = {}
+            review_dict['name'] = storage.get(User, review.user_id).first_name + ' ' + storage.get(User, review.user_id).last_name
+            review_dict['message'] = review.text
+            all_reviews.append(review_dict)
+        d['reviews'] = all_reviews
         places.append(d)
 
     return jsonify(places)
