@@ -109,3 +109,7 @@ li > input {
 .popover ul li{
     padding-bottom: 10px;
 }
+
+#statecheck {
+    float: left;
+}
