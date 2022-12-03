@@ -28,7 +28,7 @@ def get_reviews(place_id):
         hold = review.updated_at
         date = hold.strftime("%-d")
         date += 'th ' if 11 <= hold.day <= 13 else {1: 'st ', 2: 'nd ', 3: 'rd '}.get(hold.day % 10, 'th ')
-        date += hold.strftime("%B") + ' ' + hold.strftime("%Y")
+        date += hold.strftime("%B %Y")
         d = review.to_dict()
         d['reviewer'] = reviewer
         d['date'] = date
