@@ -93,8 +93,7 @@ $(document).ready(function () {
               }
               $('.reviews ul').hide();
             }
-          });
-          $('article:contains(' + place.name + ') > .reviews:nth-child(1)').last().remove();
+          }); 
         }
       }
     }); 
