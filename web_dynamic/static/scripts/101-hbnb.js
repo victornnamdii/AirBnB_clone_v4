@@ -54,20 +54,21 @@ $(document).ready(function () {
     type: 'POST',
     url: 'http://0.0.0.0:5001/api/v1/places_search',
     data: '{}',
-    dataType: 'json',
     contentType: 'application/json',
     success: function (data) {
       for (let i = 0; i < data.length; i++) {
         let place = data[i];
-        $('.places ').append('<article><div class="title_box"><h2>' + place.name + '</h2><div class="price_by_night"><p>$' + place.price_by_night + '</p></div></div><div class="information"><div class="max_guest">' + place.max_guest + ' Guests</div><div class="number_rooms">' + place.number_rooms + ' Bedroom</div><div class="number_bathrooms">' + place.number_bathrooms + ' Bathroom</div></div><div class="user"><b>Owner: </b>' + place.owner + '</div><div class="description">' + place.description + '</div></article>');
-        let reviews = place.reviews;
-        $('article:contains(' + place.name + ')').append('<div class=reviews><h2>' + reviews.length + ' Reviews <span id="spans">show</span></h2><ul></ul></div');
-        $('article:contains(' + place.name + ') > .reviews:nth-child(2)').last().remove();
-        for (let j = 0; j < reviews.length; j++) {
-          let review = reviews[j]
-          $('article:contains(' + place.name + ') > .reviews ul').append('<li><h3>From ' + review.name + '</h3><p>' + review.message + '</p></li>');
-        }
-        $('.reviews ul').hide();
+        $('.places ').append('<article id=Z' + place.id + '><div class="title_box"><h2>' + place.name + '</h2><div class="price_by_night"><p>$' + place.price_by_night + '</p></div></div><div class="information"><div class="max_guest">' + place.max_guest + ' Guests</div><div class="number_rooms">' + place.number_rooms + ' Bedroom</div><div class="number_bathrooms">' + place.number_bathrooms + ' Bathroom</div></div><div class="user"><b>Owner: </b>' + place.owner + '</div><div class="description">' + place.description + '</div></article>');
+        $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/reviews', function (result, textStatus) {
+          if (textStatus === 'success') {
+            $('article#Z' + place.id).append('<div class=reviews><h2>' + result.length + ' Reviews <span id="spans">show</span></h2><ul></ul></div');
+            for (let j = 0; j < result.length; j++) {
+              let review = result[j];
+              $('article#Z' + place.id + ' > .reviews ul').append('<li><h3>From ' + review.reviewer + ' the ' + review.date + '</h3><p>' + review.text + '</p></li>');
+            }
+            $('.reviews ul').hide();
+          }
+        });
       }
     }
   });
@@ -82,27 +83,30 @@ $(document).ready(function () {
       success: function (data) {
         for (let i = 0; i < data.length; i++) {
           let place = data[i];
-          $('.places ').append('<article><div class="title_box"><h2>' + place.name + '</h2><div class="price_by_night"><p>$' + place.price_by_night + '</p></div></div><div class="information"><div class="max_guest">' + place.max_guest + ' Guests</div><div class="number_rooms">' + place.number_rooms + ' Bedroom</div><div class="number_bathrooms">' + place.number_bathrooms + ' Bathroom</div></div><div class="user"><b>Owner: </b>' + place.owner + '</div><div class="description">' + place.description + '</div></article>');
-          let reviews = place.reviews;
-          $('article:contains(' + place.name + ')').append('<div class=reviews><h2>' + reviews.length + ' Reviews <span id="spans">show</span></h2><ul></ul></div');
-          $('article:contains(' + place.name + ') > .reviews:nth-child(2)').last().remove();
-          for (let j = 0; j < reviews.length; j++) {
-            let review = reviews[j]
-            $('article:contains(' + place.name + ') > .reviews ul').append('<li><h3>From ' + review.name + '</h3><p>' + review.message + '</p></li>');
-          }
-          $('.reviews ul').hide();
+          $('.places ').append('<article id=Z' + place.id + '><div class="title_box"><h2>' + place.name + '</h2><div class="price_by_night"><p>$' + place.price_by_night + '</p></div></div><div class="information"><div class="max_guest">' + place.max_guest + ' Guests</div><div class="number_rooms">' + place.number_rooms + ' Bedroom</div><div class="number_bathrooms">' + place.number_bathrooms + ' Bathroom</div></div><div class="user"><b>Owner: </b>' + place.owner + '</div><div class="description">' + place.description + '</div></article>');
+          $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/reviews', function (result, textStatus) {
+            if (textStatus === 'success') {
+              $('article#Z' + place.id).append('<div class=reviews><h2>' + result.length + ' Reviews <span id="spans">show</span></h2><ul></ul></div');
+              for (let j = 0; j < result.length; j++) {
+                let review = result[j];
+                $('article#Z' + place.id + ' > .reviews ul').append('<li><h3>From ' + review.reviewer + ' the ' + review.date + '</h3><p>' + review.text + '</p></li>');
+              }
+              $('.reviews ul').hide();
+            }
+          });
+          $('article:contains(' + place.name + ') > .reviews:nth-child(1)').last().remove();
         }
       }
     }); 
   });
   $(document).on('click', 'article span', function () {
     if ($(this).text() === 'show') {
-      $('article span').text('hide');
-      $('.reviews ul').show();
+      $(this).text('hide');
+      $(this).parent().siblings('ul').show();
     }
     else {
-      $('article span').text('show');
-      $('.reviews ul').hide();
+      $(this).text('show');
+      $(this).parent().siblings('ul').hide();
     }
   });
 });
